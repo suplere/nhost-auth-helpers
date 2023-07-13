@@ -1,0 +1,48 @@
+{
+	"name": "@suplere/nhost-auth-helpers-shared",
+	"version": "0.1.0",
+	"main": "dist/index.js",
+	"module": "dist/index.mjs",
+	"types": "dist/index.d.ts",
+	"publishConfig": {
+		"access": "public"
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"lint": "tsc",
+		"build": "tsup"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/suplere/nhost-auth-helpers.git"
+	},
+	"keywords": [
+		"Nhost",
+		"Auth"
+	],
+	"author": "Evzen Supler && inspired Supabase",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/suplere/nhost-auth-helpers/issues"
+	},
+	"homepage": "https://github.com/suplere/nhost-auth-helpers#readme",
+	"devDependencies": {
+		"@types/cookie": "^0.5.1",
+		"cookie": "^0.5.0",
+		"next": "13.4.9",
+		"react": ">=17.0.2 <18.0.0 || >=18.0.0-0 <19.0.0",
+		"react-dom": "^17.0.2 || ^18.0.0-0",
+		"tsconfig": "workspace:*",
+		"tsup": "7.1.0"
+	},
+	"dependencies": {
+		"jose": "^4.14.3",
+		"@nhost/react": "2.0.28",
+		"xstate": "^4.33.5"
+	},
+	"peerDependencies": {
+		"@nhost/react": "2.0.28"
+	}
+}

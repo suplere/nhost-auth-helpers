@@ -1,0 +1,41 @@
+{
+	"name": "@suplere/nhost-auth-helpers-react",
+	"version": "0.1.0",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"lint": "tsc",
+		"build": "tsup",
+		"clean:all": "rimraf dist node_modules"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/suplere/nhost-auth-helpers.git"
+	},
+	"keywords": [
+		"Nhost",
+		"Auth",
+		"React"
+	],
+	"author": "Evzen Supler && inspired Supabase",
+	"license": "MIT",
+	"devDependencies": {
+		"@nhost/react": "2.0.28",
+		"xstate": "^4.37.2",
+		"@types/react": "^17.0.20",
+		"@types/react-dom": "^17.0.9",
+		"config": "workspace:*",
+		"react": "^17.0.2",
+		"react-dom": "^17.0.2",
+		"rimraf": "^4.1.1",
+		"tsconfig": "workspace:*",
+		"tsup": "7.1.0",
+		"typescript": "5.0.4"
+	},
+	"peerDependencies": {
+		"@nhost/react": "2.0.28"
+	}
+}

@@ -1,0 +1,46 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+      - next
+  workflow_dispatch:
+
+jobs:
+  release:
+    name: Release / Node ${{ matrix.node }}
+    strategy:
+      matrix:
+        node: ['18']
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: pnpm/action-setup@v2.2.3
+        with:
+          version: 8.1.0
+
+      - name: Set up Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+          cache: pnpm
+
+      - run: |
+          pnpm install --frozen-lockfile
+          pnpm run build
+
+      - name: Create a release
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          version: pnpm ci:version
+          commit: 'chore: update versions'
+          title: 'chore: update versions'
+          publish: pnpm ci:release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

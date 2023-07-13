@@ -1,0 +1,27 @@
+{
+	"pipeline": {
+		"build": {
+			"dependsOn": ["^build"],
+			"outputs": ["dist/**", ".next/**"]
+		},
+		"build:example": {
+			"dependsOn": ["^build", "^build:example"],
+			"outputs": ["dist/**", ".next/**"]
+		},
+		"build:watch": {
+			"dependsOn": ["^build:watch"],
+			"outputs": ["dist/**", ".next/**"]
+		},
+		"clean:all": {
+			"dependsOn": ["^clean:all"],
+			"cache": false
+		},
+		"lint": {
+			"outputs": []
+		},
+		"dev": {
+			"cache": false
+		}
+	},
+	"globalDependencies": ["tsconfig.json", ".env.*"]
+}
