@@ -1,6 +1,6 @@
-import { Session } from '@supabase/supabase-js';
 import { parse, serialize } from 'cookie';
 import { base64url } from 'jose';
+import { NhostSession } from "@nhost/react"
 
 export { parse as parseCookies, serialize as serializeCookie };
 
@@ -22,7 +22,7 @@ export function isSecureEnvironment(headerHost?: string | string[]) {
 	return true;
 }
 
-export function parseSupabaseCookie(str: string | null | undefined): Partial<Session> | null {
+export function parseNhostCookie(str: string | null | undefined): Partial<NhostSession> | null {
 	if (!str) {
 		return null;
 	}
@@ -44,20 +44,14 @@ export function parseSupabaseCookie(str: string | null | undefined): Partial<Ses
 		const payload = base64url.decode(payloadStr);
 		const decoder = new TextDecoder();
 
-		const { exp, sub, ...user } = JSON.parse(decoder.decode(payload));
+		const { exp, sub } = JSON.parse(decoder.decode(payload));
 
 		return {
-			expires_at: exp,
-			expires_in: exp - Math.round(Date.now() / 1000),
-			token_type: 'bearer',
-			access_token: session[0],
-			refresh_token: session[1],
-			provider_token: session[2],
-			provider_refresh_token: session[3],
+			accessTokenExpiresIn: exp,
+			accessToken: session[0],
+			refreshToken: session[1],
 			user: {
-				id: sub,
-				factors: session[4],
-				...user
+				...session[2]
 			}
 		};
 	} catch (err) {
@@ -66,12 +60,10 @@ export function parseSupabaseCookie(str: string | null | undefined): Partial<Ses
 	}
 }
 
-export function stringifySupabaseSession(session: Session): string {
+export function stringifyNhostSession(session: NhostSession): string {
 	return JSON.stringify([
-		session.access_token,
-		session.refresh_token,
-		session.provider_token,
-		session.provider_refresh_token,
-		session.user?.factors ?? null
+		session.accessToken,
+		session.refreshToken,
+		session.user
 	]);
 }

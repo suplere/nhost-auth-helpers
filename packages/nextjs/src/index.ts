@@ -1,5 +1,5 @@
 // Types
-export type { Session, User, SupabaseClient } from '@supabase/supabase-js';
+export type { NhostSession, User, NhostClient } from '@nhost/nextjs';
 
 export { createPagesBrowserClient } from './pagesBrowserClient';
 export { createPagesServerClient } from './pagesServerClient';
@@ -8,10 +8,3 @@ export { createClientComponentClient } from './clientComponentClient';
 export { createServerComponentClient } from './serverComponentClient';
 export { createRouteHandlerClient } from './routeHandlerClient';
 export { createServerActionClient } from './serverActionClient';
-
-// Deprecated Functions
-export {
-	createBrowserSupabaseClient,
-	createServerSupabaseClient,
-	createMiddlewareSupabaseClient
-} from './deprecated';

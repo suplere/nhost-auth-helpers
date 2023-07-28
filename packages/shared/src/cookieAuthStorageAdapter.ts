@@ -1,10 +1,9 @@
-import { GoTrueClientOptions, Session } from '@supabase/supabase-js';
-import { DEFAULT_COOKIE_OPTIONS, parseSupabaseCookie, stringifySupabaseSession } from './utils';
+import { ClientStorage, NhostSession } from "@nhost/hasura-auth-js"
+import { DEFAULT_COOKIE_OPTIONS, parseNhostCookie, stringifyNhostSession } from './utils';
 import { CookieOptions } from './types';
 
-export interface StorageAdapter extends Exclude<GoTrueClientOptions['storage'], undefined> {}
-
-export abstract class CookieAuthStorageAdapter implements StorageAdapter {
+export type StorageAdapter = ClientStorage
+export abstract class CookieAuthStorageAdapter implements ClientStorage {
 	protected readonly cookieOptions: CookieOptions;
 
 	constructor(cookieOptions?: CookieOptions) {
@@ -28,7 +27,7 @@ export abstract class CookieAuthStorageAdapter implements StorageAdapter {
 			return value;
 		}
 
-		return JSON.stringify(parseSupabaseCookie(value));
+		return JSON.stringify(parseNhostCookie(value));
 	}
 
 	setItem(key: string, value: string): void | Promise<void> {
@@ -38,8 +37,8 @@ export abstract class CookieAuthStorageAdapter implements StorageAdapter {
 			return;
 		}
 
-		let session: Session = JSON.parse(value);
-		const sessionStr = stringifySupabaseSession(session);
+		let session: NhostSession = JSON.parse(value);
+		const sessionStr = stringifyNhostSession(session);
 
 		this.setCookie(key, sessionStr);
 	}

@@ -9,18 +9,21 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
+		"@nhost/nextjs": "1.13.34",
 		"@suplere/nhost-auth-helpers-nextjs": "workspace:*",
-		"@types/node": "20.2.5",
-		"@types/react": "18.2.7",
-		"@types/react-dom": "18.2.4",
+		"@types/node": "20.4.5",
+		"@types/react": "18.2.17",
+		"@types/react-dom": "18.2.7",
 		"config": "workspace:*",
 		"eslint": "8.41.0",
-		"eslint-config-next": "13.4.4",
-		"next": "13.4.4",
+		"eslint-config-next": "13.4.12",
+		"graphql": "^16.7.1",
+		"graphql-tag": "^2.12.6",
+		"next": "13.4.12",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"tsconfig": "workspace:*",
-		"typescript": "5.0.4"
+		"typescript": "5.1.6"
 	},
 	"devDependencies": {
 		"json5": ">=1.0.2"

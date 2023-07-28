@@ -1,15 +1,19 @@
 'use client';
 
-import { Session, createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { NhostSession, createClientComponentClient } from '@suplere/nhost-auth-helpers-nextjs';
 
-// Supabase auth needs to be triggered client-side
-export default function Login({ session }: { session: Session | null }) {
-	const supabase = createClientComponentClient<Database>();
+export default function Login({ session }: { session: NhostSession | null }) {
+	const nhost = createClientComponentClient({
+		options: {
+			subdomain: process.env.NEXT_PUBLIC_NHOST_SUBDOMAIN,
+			region: process.env.NEXT_PUBLIC_NHOST_REGION
+		}
+	});
 
 	const handleEmailLogin = async () => {
-		const { error } = await supabase.auth.signInWithPassword({
-			email: 'jon@supabase.com',
-			password: 'password'
+		const { error } = await nhost.auth.signIn({
+			email: 'suplere@example.com',
+			password: 'passwordpassword'
 		});
 
 		if (error) {
@@ -18,7 +22,7 @@ export default function Login({ session }: { session: Session | null }) {
 	};
 
 	const handleGitHubLogin = async () => {
-		const { error } = await supabase.auth.signInWithOAuth({
+		const { error } = await nhost.auth.signIn({
 			provider: 'github'
 		});
 
@@ -28,7 +32,7 @@ export default function Login({ session }: { session: Session | null }) {
 	};
 
 	const handleLogout = async () => {
-		const { error } = await supabase.auth.signOut();
+		const { error } = await nhost.auth.signOut();
 
 		if (error) {
 			console.log({ error });

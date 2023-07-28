@@ -1,72 +1,52 @@
+import { NhostClient } from '@nhost/nextjs';
 import {
 	BrowserCookieAuthStorageAdapter,
 	CookieOptionsWithName,
-	SupabaseClientOptionsWithoutAuth,
-	createSupabaseClient
-} from '@supabase/auth-helpers-shared';
+	NhostNextClientConstructorParams,
+	createNhostClient
+} from '@suplere/nhost-auth-helpers-shared';
 
-import type { SupabaseClient } from '@supabase/supabase-js';
-import type { GenericSchema } from '@supabase/supabase-js/dist/module/lib/types';
+let nhost: any;
 
-// can't type this properly as `Database`, `SchemaName` and `Schema` are only available within `createClientComponentClient` function
-let supabase: any;
-
-export function createClientComponentClient<
-	Database = any,
-	SchemaName extends string & keyof Database = 'public' extends keyof Database
-		? 'public'
-		: string & keyof Database,
-	Schema extends GenericSchema = Database[SchemaName] extends GenericSchema
-		? Database[SchemaName]
-		: any
->({
-	supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL,
-	supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+export function createClientComponentClient({
 	options,
 	cookieOptions,
 	isSingleton = true
 }: {
-	supabaseUrl?: string;
-	supabaseKey?: string;
-	options?: SupabaseClientOptionsWithoutAuth<SchemaName>;
+	options?: NhostNextClientConstructorParams;
 	cookieOptions?: CookieOptionsWithName;
 	isSingleton?: boolean;
-} = {}): SupabaseClient<Database, SchemaName, Schema> {
-	if (!supabaseUrl || !supabaseKey) {
+} = {}): NhostClient {
+	const subdomain = options?.subdomain || process.env.NEXT_PUBLIC_NHOST_SUBDOMAIN
+	const region = options?.region || process.env.NEXT_PUBLIC_NHOST_REGION
+	
+	if (!subdomain ) {
 		throw new Error(
-			'either NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY env variables or supabaseUrl and supabaseKey are required!'
+			'either NEXT_PUBLIC_NHOST_SUBDOMAIN and NEXT_PUBLIC_NHOST_REGION env variables or subdomain and region are required!'
 		);
 	}
 
 	const createNewClient = () =>
-		createSupabaseClient<Database, SchemaName, Schema>(supabaseUrl, supabaseKey, {
+		createNhostClient({
 			...options,
-			global: {
-				...options?.global,
-				headers: {
-					...options?.global?.headers,
-					'X-Client-Info': `${PACKAGE_NAME}@${PACKAGE_VERSION}`
-				}
-			},
 			auth: {
 				storageKey: cookieOptions?.name,
 				storage: new BrowserCookieAuthStorageAdapter(cookieOptions)
-			}
+			},
+			subdomain,
+			region
 		});
 
 	if (isSingleton) {
 		// The `Singleton` pattern is the default to simplify the instantiation
 		// of a Supabase client across Client Components.
-		const _supabase = supabase ?? createNewClient();
+		const _nhost = nhost ?? createNewClient();
 		// For SSG and SSR always create a new Supabase client
-		if (typeof window === 'undefined') return _supabase;
+		if (typeof window === 'undefined') return _nhost;
 		// Create the Supabase client once in the client
-		if (!supabase) supabase = _supabase;
-		return supabase;
+		if (!nhost) nhost = _nhost;
+		return nhost;
 	}
-
-	// This allows for multiple Supabase clients, which may be required when using
-	// multiple schemas. The user will be responsible for ensuring a single
-	// instance of Supabase is used across Client Components, for each schema.
+	
 	return createNewClient();
 }

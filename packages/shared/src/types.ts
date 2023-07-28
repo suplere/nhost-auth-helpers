@@ -1,5 +1,5 @@
+import { NhostReactClientConstructorParams } from '@nhost/react';
 import type { CookieSerializeOptions } from 'cookie';
-import type { SupabaseClientOptions } from '@supabase/supabase-js';
 
 export type CookieOptions = Pick<
 	CookieSerializeOptions,
@@ -8,7 +8,8 @@ export type CookieOptions = Pick<
 
 export type CookieOptionsWithName = { name?: string } & CookieOptions;
 
-export type SupabaseClientOptionsWithoutAuth<SchemaName = 'public'> = Omit<
-	SupabaseClientOptions<SchemaName>,
-	'auth'
->;
+export interface NhostNextClientConstructorParams
+  extends Omit<
+    NhostReactClientConstructorParams,
+    'clientStorage' | 'clientStorageType' | 'clientStorageGetter' | 'clientStorageSetter'
+  > {}

@@ -1,14 +1,12 @@
 import Login from './login';
 import './globals.css';
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createServerComponentClient } from '@suplere/nhost-auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-	const supabase = createServerComponentClient<Database>({ cookies });
+	const nhost = createServerComponentClient({ cookies });
 
-	const {
-		data: { session }
-	} = await supabase.auth.getSession();
+	const session = nhost.auth.getSession();
 
 	return (
 		<html lang="en">

@@ -1,13 +1,12 @@
+import { NhostClient } from '@nhost/nextjs';
 import {
 	CookieAuthStorageAdapter,
 	CookieOptions,
+	NhostNextClientConstructorParams,
 	CookieOptionsWithName,
-	SupabaseClientOptionsWithoutAuth,
-	createSupabaseClient
-} from '@supabase/auth-helpers-shared';
+	createNhostClient
+} from '@suplere/nhost-auth-helpers-shared';
 
-import type { SupabaseClient } from '@supabase/supabase-js';
-import type { GenericSchema } from '@supabase/supabase-js/dist/module/lib/types';
 import type { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
 
 class NextServerComponentAuthStorageAdapter extends CookieAuthStorageAdapter {
@@ -34,48 +33,34 @@ class NextServerComponentAuthStorageAdapter extends CookieAuthStorageAdapter {
 	}
 }
 
-export function createServerComponentClient<
-	Database = any,
-	SchemaName extends string & keyof Database = 'public' extends keyof Database
-		? 'public'
-		: string & keyof Database,
-	Schema extends GenericSchema = Database[SchemaName] extends GenericSchema
-		? Database[SchemaName]
-		: any
->(
+export function createServerComponentClient(
 	context: {
 		cookies: () => ReadonlyRequestCookies;
 	},
 	{
-		supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL,
-		supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
 		options,
 		cookieOptions
 	}: {
-		supabaseUrl?: string;
-		supabaseKey?: string;
-		options?: SupabaseClientOptionsWithoutAuth<SchemaName>;
+		options?: NhostNextClientConstructorParams;
 		cookieOptions?: CookieOptionsWithName;
 	} = {}
-): SupabaseClient<Database, SchemaName, Schema> {
-	if (!supabaseUrl || !supabaseKey) {
+): NhostClient {
+	const subdomain = options?.subdomain || process.env.NEXT_PUBLIC_NHOST_SUBDOMAIN
+	const region = options?.region || process.env.NEXT_PUBLIC_NHOST_REGION
+	if (!subdomain) {
 		throw new Error(
-			'either NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY env variables or supabaseUrl and supabaseKey are required!'
+			'either NEXT_PUBLIC_NHOST_SUBDOMAIN and NEXT_PUBLIC_NHOST_REGION env variables or subdomain and region are required!'
 		);
 	}
 
-	return createSupabaseClient<Database, SchemaName, Schema>(supabaseUrl, supabaseKey, {
+	return createNhostClient(
+		{
 		...options,
-		global: {
-			...options?.global,
-			headers: {
-				...options?.global?.headers,
-				'X-Client-Info': `${PACKAGE_NAME}@${PACKAGE_VERSION}`
-			}
-		},
 		auth: {
 			storageKey: cookieOptions?.name,
 			storage: new NextServerComponentAuthStorageAdapter(context, cookieOptions)
-		}
+		},
+		subdomain,
+		region
 	});
 }

@@ -21,7 +21,7 @@
 		"clean:all": "turbo run clean:all",
 		"ci:version": "changeset version",
 		"ci:release": "changeset publish",
-		"prepare": "husky install"
+		"prepare": ""
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.22.0",
@@ -45,9 +45,6 @@
 		},
 		"overrides-notes": {
 			"@changesets/assemble-release-plan": "patched until https://github.com/changesets/changesets/issues/835 is resolved"
-		},
-		"patchedDependencies": {
-			"@changesets/assemble-release-plan@5.2.3": "patches/@changesets__assemble-release-plan@5.2.3.patch"
 		}
 	},
 	"lint-staged": {

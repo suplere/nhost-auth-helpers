@@ -1,44 +1,35 @@
-import { createClient } from '@supabase/supabase-js';
-import { SupabaseClientOptionsWithoutAuth } from './types';
+import { NhostNextClientConstructorParams } from './types';
 import { isBrowser } from './utils';
 import { StorageAdapter } from './cookieAuthStorageAdapter';
-import { GenericSchema } from '@supabase/supabase-js/dist/module/lib/types';
+import { NhostClient, NhostReactClientConstructorParams, VanillaNhostClient } from '@nhost/react';
 
-export function createSupabaseClient<
-	Database = any,
-	SchemaName extends string & keyof Database = 'public' extends keyof Database
-		? 'public'
-		: string & keyof Database,
-	Schema extends GenericSchema = Database[SchemaName] extends GenericSchema
-		? Database[SchemaName]
-		: any
->(
-	supabaseUrl: string,
-	supabaseKey: string,
-	options: SupabaseClientOptionsWithoutAuth<SchemaName> & {
+export function createNhostClient(
+	params: NhostNextClientConstructorParams & {
 		auth: {
 			storage: StorageAdapter;
 			storageKey?: string;
 		};
 	}
-) {
+): NhostClient  {
 	const bowser = isBrowser();
 
-	return createClient<Database, SchemaName, Schema>(supabaseUrl, supabaseKey, {
-		...options,
-		auth: {
-			flowType: 'pkce',
-			autoRefreshToken: bowser,
-			detectSessionInUrl: bowser,
-			persistSession: true,
-			storage: options.auth.storage,
+	let clientParams: NhostReactClientConstructorParams = {
+		...params
+	}
 
-			// fix this in supabase-js
-			...(options.auth?.storageKey
-				? {
-						storageKey: options.auth.storageKey
-				  }
-				: {})
-		}
-	});
+	const nhost = new VanillaNhostClient({
+    ...clientParams,
+    clientStorageType: 'custom',
+    clientStorage: params.auth.storage,
+    start: false,
+    autoRefreshToken: false,
+    autoSignIn: true
+  })
+
+	
+
+  return nhost
+
+
+
 }

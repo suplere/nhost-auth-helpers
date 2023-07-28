@@ -39,3 +39,4 @@ docs/
 
 # svelte kit
 .svelte-kit
+packages/backend/.secrets
