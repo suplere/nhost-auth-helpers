@@ -13,7 +13,6 @@ A collection of framework specific Auth utilities for working with Nhost.
   - `@examples/nextjs-pages`: a [Next.js](https://nextjs.org) app using Pages Router
 - Packages
   - `@suplere/nhost-auth-helpers-nextjs`: the Nhost auth helper nextjs library used by `nextjs` application
-  - `shared`: shared typescript types used by `@suplere/nhost-auth-helpers-nextjs` library
   - `config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
   - `tsconfig`: `tsconfig.json`s used throughout the monorepo
 
