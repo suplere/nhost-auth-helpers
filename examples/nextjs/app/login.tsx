@@ -1,8 +1,10 @@
 'use client';
 
 import { NhostSession, createClientComponentClient } from '@suplere/nhost-auth-helpers-nextjs';
+import { useRouter } from 'next/navigation';
 
 export default function Login({ session }: { session: NhostSession | null }) {
+	const router = useRouter()
 	const nhost = createClientComponentClient({
 		options: {
 			subdomain: process.env.NEXT_PUBLIC_NHOST_SUBDOMAIN,
@@ -19,6 +21,7 @@ export default function Login({ session }: { session: NhostSession | null }) {
 		if (error) {
 			console.log({ error });
 		}
+		router.refresh()
 	};
 
 	const handleGitHubLogin = async () => {
@@ -37,6 +40,7 @@ export default function Login({ session }: { session: NhostSession | null }) {
 		if (error) {
 			console.log({ error });
 		}
+		router.refresh()
 	};
 
 	// this `session` is from the root loader  - server-side
@@ -47,7 +51,7 @@ export default function Login({ session }: { session: NhostSession | null }) {
 	) : (
 		<>
 			<button onClick={handleEmailLogin}>Email Login</button>
-			<button onClick={handleGitHubLogin}>GitHub Login</button>
+			<button onClick={handleGitHubLogin}>GitHub Login - not implemented</button>
 		</>
 	);
 }
