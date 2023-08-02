@@ -1,4 +1,4 @@
-import { createPagesServerClient, User } from '@supabase/auth-helpers-nextjs';
+import { createPagesServerClient, User } from '@suplere/nhost-auth-helpers-nextjs';
 import { GetServerSidePropsContext } from 'next';
 import Link from 'next/link';
 
@@ -16,11 +16,9 @@ export default function Profile({ user }: { user: User }) {
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 	// Create authenticated Supabase Client
-	const supabase = createPagesServerClient<Database>(ctx);
+	const nhost = await createPagesServerClient(ctx);
 	// Check if we have a session
-	const {
-		data: { session }
-	} = await supabase.auth.getSession();
+	const session = nhost.auth.getSession();
 
 	if (!session)
 		return {

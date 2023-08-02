@@ -6,7 +6,9 @@ import type { NextRequest } from 'next/server';
 // for any Server Component route that uses `createServerComponentClient`
 export async function middleware(req: NextRequest) {
 	const res = NextResponse.next();
-	const nhost = createMiddlewareClient({ req, res });
+	const nhost = await createMiddlewareClient({ req, res });
+
 	nhost.auth.getSession();
+	
 	return res;
 }

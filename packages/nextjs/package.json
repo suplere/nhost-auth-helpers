@@ -28,8 +28,7 @@
 	},
 	"homepage": "https://github.com/suplere/nhost-auth-helpers/tree/main/packages/nextjs#readme",
 	"devDependencies": {
-		"@nhost/nextjs": "1.13.34",
-		"@types/set-cookie-parser": "2.4.2",
+		"@types/js-cookie": "^3.0.3",
 		"config": "workspace:*",
 		"next": "13.4.12",
 		"react": "18.2.0",
@@ -41,10 +40,10 @@
 		"xstate": "4.37.2"
 	},
 	"dependencies": {
-		"@suplere/nhost-auth-helpers-shared": "workspace:*",
-		"set-cookie-parser": "2.6.0"
+		"@nhost/nhost-js": "2.2.13",
+		"js-cookie": "^3.0.5"
 	},
 	"peerDependencies": {
-		"@nhost/nextjs": "1.13.34"
+		"@nhost/nhost-js": "2.2.13"
 	}
 }

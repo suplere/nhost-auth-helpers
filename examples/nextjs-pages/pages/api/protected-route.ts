@@ -1,14 +1,13 @@
 // pages/api/protected-route.ts
 import { NextApiHandler } from 'next';
-import { createPagesServerClient } from '@supabase/auth-helpers-nextjs';
+import { createPagesServerClient } from '@suplere/nhost-auth-helpers-nextjs';
+import { GET_USERS } from '@/lib/graphql';
 
 const ProtectedRoute: NextApiHandler = async (req, res) => {
 	// Create authenticated Supabase Client
-	const supabase = createPagesServerClient<Database>({ req, res });
+	const nhost = await createPagesServerClient({ req, res });
 	// Check if we have a session
-	const {
-		data: { session }
-	} = await supabase.auth.getSession();
+	const session = nhost.auth.getSession();
 
 	if (!session)
 		return res.status(401).json({
@@ -17,7 +16,7 @@ const ProtectedRoute: NextApiHandler = async (req, res) => {
 		});
 
 	// Run queries with RLS on the server
-	const { data } = await supabase.from('users').select('*');
+	const { data } = await nhost.graphql.request(GET_USERS);
 	res.json(data);
 };
 

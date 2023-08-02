@@ -10,9 +10,10 @@
 		"clean:all": "rimraf .next node_modules"
 	},
 	"dependencies": {
-		"@nhost/nextjs": "1.13.34",
 		"@suplere/nhost-auth-helpers-nextjs": "workspace:*",
 		"autoprefixer": "10.4.14",
+		"graphql": "^16.7.1",
+		"graphql-tag": "^2.12.6",
 		"next": "13.4.12",
 		"postcss": "8.4.27",
 		"react": "18.2.0",

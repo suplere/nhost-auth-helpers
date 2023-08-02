@@ -1,16 +1,16 @@
 // pages/api/protected-route.ts
 import { NextApiHandler } from 'next';
-import { createPagesServerClient } from '@supabase/auth-helpers-nextjs';
+import { createPagesServerClient } from '@suplere/nhost-auth-helpers-nextjs';
 
 const callback: NextApiHandler = async (req, res) => {
 	// Create authenticated Supabase Client
-	const supabase = createPagesServerClient<Database>({ req, res });
+	const nhost = await createPagesServerClient({ req, res });
 
 	const code = req.query.code;
 
-	if (typeof code === 'string') {
-		await supabase.auth.exchangeCodeForSession(code);
-	}
+	// if (typeof code === 'string') {
+	// 	await nhost.auth.exchangeCodeForSession(code);
+	// }
 
 	res.redirect('/');
 };

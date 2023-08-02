@@ -1,5 +1,5 @@
 // Types
-export type { NhostSession, User, NhostClient } from '@nhost/nextjs';
+export type { NhostSession, User, NhostClient } from '@nhost/nhost-js';
 
 export { createPagesBrowserClient } from './pagesBrowserClient';
 export { createPagesServerClient } from './pagesServerClient';

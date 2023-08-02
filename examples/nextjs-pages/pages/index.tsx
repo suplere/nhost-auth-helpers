@@ -1,35 +1,36 @@
+import { GET_USERS, UPDATE_USER } from '@/lib/graphql';
 import {
-	Session,
+	NhostSession,
 	createPagesBrowserClient,
 	createPagesServerClient
-} from '@/../../packages/nextjs/dist';
+} from '@suplere/nhost-auth-helpers-nextjs';
 import type { GetServerSidePropsContext, NextPage } from 'next';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-export default function Login({ user, session }: { user: User | null; session: Session | null }) {
-	const supabase = createPagesBrowserClient<Database>();
+export default function Login({ user, session }: { user: User | null; session: NhostSession | null }) {
+	const nhost = createPagesBrowserClient()
 
 	const [data, setData] = useState<any>(null);
 
 	useEffect(() => {
 		async function loadData() {
-			const { data } = await supabase.from('users').select('*').single();
-			setData(data);
+			const { data } = await nhost.graphql.request(GET_USERS);
+			if (data && data.users.length > 0) setData(data.users[0]);
 		}
-
+		console.log(user,nhost)
 		if (user) loadData();
-	}, [user, supabase]);
+	}, [user, nhost]);
 
 	return session ? (
 		<>
 			<p>
 				[<Link href="/profile">getServerSideProps</Link>] | [
 				<Link href="/protected-page">server-side RLS</Link>] |{' '}
-				<button onClick={() => supabase.auth.updateUser({ data: { test1: 'updated' } })}>
+				<button onClick={() => nhost.graphql.request(UPDATE_USER, { id: session.user.id, data: { metadata: { test: "update" } } })}>
 					Update user metadata
 				</button>
-				<button onClick={() => supabase.auth.refreshSession()}>Refresh session</button>
+				<button onClick={() => nhost.auth.refreshSession()}>Refresh session</button>
 			</p>
 			<p>user:</p>
 			<pre>{JSON.stringify(session, null, 2)}</pre>
@@ -39,26 +40,21 @@ export default function Login({ user, session }: { user: User | null; session: S
 	) : (
 		<button
 			onClick={() => {
-				supabase.auth.signInWithOAuth({
-					provider: 'github',
-					options: {
-						scopes: 'repo',
-						redirectTo: 'http://localhost:3000/api/callback'
-					}
-				});
+				nhost.auth.signIn({
+					email: 'suplere@example.com',
+					password: 'passwordpassword'
+				})
 			}}
 		>
-			Login with github
+			Login
 		</button>
 	);
 }
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-	const supabase = createPagesServerClient<Database>(ctx);
+	const nhost = await createPagesServerClient(ctx);
 
-	const {
-		data: { session }
-	} = await supabase.auth.getSession();
+	const session  = nhost.auth.getSession();
 
 	return {
 		props: {

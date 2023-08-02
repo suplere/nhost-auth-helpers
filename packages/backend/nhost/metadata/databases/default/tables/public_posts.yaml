@@ -11,6 +11,8 @@ insert_permissions:
       check:
         user_id:
           _eq: X-Hasura-User-Id
+      set:
+        user_id: x-hasura-User-Id
       columns:
         - id
         - content
@@ -26,19 +28,14 @@ select_permissions:
         - updated_at
         - id
         - user_id
-      filter:
-        user_id:
-          _eq: X-Hasura-User-Id
+      filter: {}
       allow_aggregations: true
 update_permissions:
   - role: user
     permission:
       columns:
         - content
-        - created_at
-        - updated_at
         - id
-        - user_id
       filter:
         user_id:
           _eq: X-Hasura-User-Id

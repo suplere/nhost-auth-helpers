@@ -5,7 +5,7 @@ import { GET_POSTS } from '../../lib/graphql';
 
 // this page will only be accessible to signed in users with a valid session
 export default async function RequiredSession() {
-	const nhost = createServerComponentClient({ cookies });
+	const nhost = await createServerComponentClient({ cookies });
 
 	const session = nhost.auth.getSession();
 

@@ -1,66 +1,48 @@
-import { NhostClient } from '@nhost/nextjs';
-import {
-	CookieAuthStorageAdapter,
-	CookieOptions,
-	NhostNextClientConstructorParams,
-	CookieOptionsWithName,
-	createNhostClient
-} from '@suplere/nhost-auth-helpers-shared';
-
+import { NHOST_REFRESH_TOKEN_KEY, NhostClient, NhostSession } from '@nhost/nhost-js';
 import type { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
+import { createServerNhostClient } from './clients';
+import { NhostNextClientConstructorParams } from './types';
+import { NHOST_SESSION_KEY } from './utils';
 
-class NextServerComponentAuthStorageAdapter extends CookieAuthStorageAdapter {
-	constructor(
-		private readonly context: {
-			cookies: () => ReadonlyRequestCookies;
-		},
-		cookieOptions?: CookieOptions
-	) {
-		super(cookieOptions);
-	}
-
-	protected getCookie(name: string): string | null | undefined {
-		const nextCookies = this.context.cookies();
-		return nextCookies.get(name)?.value;
-	}
-	protected setCookie(name: string, value: string): void {
-		// Server Components cannot set cookies. Must use Middleware, Server Action or Route Handler
-		// https://github.com/vercel/next.js/discussions/41745#discussioncomment-5198848
-	}
-	protected deleteCookie(name: string): void {
-		// Server Components cannot set cookies. Must use Middleware, Server Action or Route Handler
-		// https://github.com/vercel/next.js/discussions/41745#discussioncomment-5198848
-	}
-}
-
-export function createServerComponentClient(
+export async function createServerComponentClient(
 	context: {
 		cookies: () => ReadonlyRequestCookies;
 	},
 	{
-		options,
-		cookieOptions
+		options
 	}: {
 		options?: NhostNextClientConstructorParams;
-		cookieOptions?: CookieOptionsWithName;
 	} = {}
-): NhostClient {
-	const subdomain = options?.subdomain || process.env.NEXT_PUBLIC_NHOST_SUBDOMAIN
-	const region = options?.region || process.env.NEXT_PUBLIC_NHOST_REGION
+): Promise<NhostClient> {
+	const subdomain = options?.subdomain || process.env.NEXT_PUBLIC_NHOST_SUBDOMAIN;
+	const region = options?.region || process.env.NEXT_PUBLIC_NHOST_REGION;
 	if (!subdomain) {
 		throw new Error(
 			'either NEXT_PUBLIC_NHOST_SUBDOMAIN and NEXT_PUBLIC_NHOST_REGION env variables or subdomain and region are required!'
 		);
 	}
 
-	return createNhostClient(
-		{
+	const session = context.cookies().get(NHOST_SESSION_KEY)?.value;
+	const refreshToken = context.cookies().get(NHOST_REFRESH_TOKEN_KEY)?.value;
+	const initialSession: NhostSession =
+		session && refreshToken ? { ...JSON.parse(session), refreshToken } : undefined;
+
+
+	return createServerNhostClient({
 		...options,
-		auth: {
-			storageKey: cookieOptions?.name,
-			storage: new NextServerComponentAuthStorageAdapter(context, cookieOptions)
+		clientStorageType: 'custom',
+		clientStorage: {
+			getItem: (key) => {
+				const cookieValue = context.cookies().get(key)?.value ?? null;
+				return cookieValue;
+			},
+			setItem: (key, value) => {},
+			removeItem: (key) => {}
 		},
+		start: false,
+		autoRefreshToken: false,
+		autoSignIn: true,
 		subdomain,
 		region
-	});
+	}, initialSession);
 }

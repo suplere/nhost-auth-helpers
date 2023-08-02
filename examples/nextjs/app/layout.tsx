@@ -4,9 +4,10 @@ import { createServerComponentClient } from '@suplere/nhost-auth-helpers-nextjs'
 import { cookies } from 'next/headers';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-	const nhost = createServerComponentClient({ cookies });
-
+	const nhost = await createServerComponentClient({ cookies });
+	
 	const session = nhost.auth.getSession();
+
 
 	return (
 		<html lang="en">

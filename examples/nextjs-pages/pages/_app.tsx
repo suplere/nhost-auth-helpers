@@ -1,17 +1,17 @@
 import { useRouter } from 'next/router';
-import { createPagesBrowserClient, Session } from '@supabase/auth-helpers-nextjs';
+import { createPagesBrowserClient } from '@suplere/nhost-auth-helpers-nextjs';
 import type { AppProps } from 'next/app';
 import '../styles/globals.css';
 
-function MyApp({ Component, pageProps }: AppProps<{ initialSession: Session }>) {
+function MyApp({ Component, pageProps }: AppProps<{}>) {
 	const router = useRouter();
-	const supabase = createPagesBrowserClient<Database>();
+	const nhost = createPagesBrowserClient();
 
 	return (
 		<>
 			<button
 				onClick={async () => {
-					await supabase.auth.signOut();
+					await nhost.auth.signOut();
 					router.push('/');
 				}}
 			>

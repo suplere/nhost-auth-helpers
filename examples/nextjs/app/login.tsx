@@ -39,7 +39,7 @@ export default function Login({ session }: { session: NhostSession | null }) {
 		}
 	};
 
-	// this `session` is from the root loader - server-side
+	// this `session` is from the root loader  - server-side
 	// therefore, it can safely be used to conditionally render
 	// SSR pages without issues with hydration
 	return session ? (

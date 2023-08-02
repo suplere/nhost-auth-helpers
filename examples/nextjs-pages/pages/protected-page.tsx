@@ -1,4 +1,5 @@
-import { createPagesServerClient, User } from '@supabase/auth-helpers-nextjs';
+import { GET_USERS } from '@/lib/graphql';
+import { createPagesServerClient, User } from '@suplere/nhost-auth-helpers-nextjs';
 import { GetServerSidePropsContext } from 'next';
 import Link from 'next/link';
 
@@ -19,11 +20,9 @@ export default function ProtectedPage({ user, data }: { user: User; data: any })
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 	// Create authenticated Supabase Client
-	const supabase = createPagesServerClient<Database>(ctx);
+	const nhost = await createPagesServerClient(ctx);
 	// Check if we have a session
-	const {
-		data: { session }
-	} = await supabase.auth.getSession();
+	const session = nhost.auth.getSession();
 
 	if (!session)
 		return {
@@ -34,7 +33,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 		};
 
 	// Run queries with RLS on the server
-	const { data } = await supabase.from('users').select('*');
+	const { data } = await nhost.graphql.request(GET_USERS);
 
 	return {
 		props: {
