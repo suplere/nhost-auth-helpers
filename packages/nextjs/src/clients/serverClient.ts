@@ -21,6 +21,8 @@ export async function createServerNhostClient(
 			nhost.auth.client.interpreter!,
 			(state: StateFrom<any>) => !state.hasTag('loading')
 		);
+	} else {
+		// nhost.auth.client.start()
 	}
 
   return nhost

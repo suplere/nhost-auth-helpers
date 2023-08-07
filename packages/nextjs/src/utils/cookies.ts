@@ -4,6 +4,10 @@ import {
 } from '@nhost/nhost-js'
 import { NHOST_SESSION_KEY } from './constants';
 import Cookies from 'js-cookie'
+import { parse, serialize } from 'cookie';
+
+
+export { parse as parseCookies, serialize as serializeCookie };
 
 
 export const setNhostSessionInCookie = (param: NhostClient | NhostSession | null) => {

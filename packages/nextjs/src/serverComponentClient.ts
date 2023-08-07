@@ -27,7 +27,6 @@ export async function createServerComponentClient(
 	const initialSession: NhostSession =
 		session && refreshToken ? { ...JSON.parse(session), refreshToken } : undefined;
 
-
 	return createServerNhostClient({
 		...options,
 		clientStorageType: 'custom',

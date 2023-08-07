@@ -8,12 +8,11 @@ export default async function RequiredSession() {
 	const nhost = await createServerComponentClient({ cookies });
 
 	const session = nhost.auth.getSession();
-
 	if (!session) {
 		redirect('/');
 	}
 
-	const {data} = await nhost.graphql.request(GET_POSTS);
+	const { data } = await nhost.graphql.request(GET_POSTS);
 
 	return <pre>{JSON.stringify({ data }, null, 2)}</pre>;
 }

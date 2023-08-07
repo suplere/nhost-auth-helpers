@@ -24,6 +24,19 @@ export default function Login({ session }: { session: NhostSession | null }) {
 		router.refresh()
 	};
 
+	const handleResetPassword = async () => {
+		const { error } = await nhost.auth.resetPassword({
+			email: "suplere@example.com",
+			options: {
+				redirectTo: "/required-session"
+			}
+		})
+
+		if (error) {
+			console.log({ error });
+		}
+	}
+
 	const handleGitHubLogin = async () => {
 		const { error } = await nhost.auth.signIn({
 			provider: 'github'
@@ -51,6 +64,7 @@ export default function Login({ session }: { session: NhostSession | null }) {
 	) : (
 		<>
 			<button onClick={handleEmailLogin}>Email Login</button>
+			<button onClick={handleResetPassword}>Forgot password</button>
 			<button onClick={handleGitHubLogin}>GitHub Login - not implemented</button>
 		</>
 	);

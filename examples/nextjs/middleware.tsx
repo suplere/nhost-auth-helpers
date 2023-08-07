@@ -1,4 +1,4 @@
-import { createMiddlewareClient } from '@suplere/nhost-auth-helpers-nextjs';
+import { NhostSession, createMiddlewareClient, refresh, setNhostSessionInCookie  } from '@suplere/nhost-auth-helpers-nextjs';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
@@ -6,9 +6,9 @@ import type { NextRequest } from 'next/server';
 // for any Server Component route that uses `createServerComponentClient`
 export async function middleware(req: NextRequest) {
 	const res = NextResponse.next();
+	
 	const nhost = await createMiddlewareClient({ req, res });
-
-	nhost.auth.getSession();
+	const session = nhost.auth.getSession()
 	
 	return res;
 }
